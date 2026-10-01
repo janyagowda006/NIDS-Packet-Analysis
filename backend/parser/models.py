@@ -52,6 +52,7 @@ class NormalizedPacket:
     # DNS Metadata
     dns_query: Optional[str] = None  # FQDN query name, e.g. "example.com"
     dns_query_type: Optional[str] = None  # e.g., "A", "AAAA", "PTR", "TXT"
+    dns_is_response: Optional[bool] = None  # True if DNS response/reply, False if query
 
     # DHCP Metadata
     dhcp_message_type: Optional[str] = None  # e.g., "discover", "offer", "request", "ack"
@@ -94,6 +95,7 @@ class NormalizedPacket:
             "arp_target_ip": self.arp_target_ip,
             "dns_query": self.dns_query,
             "dns_query_type": self.dns_query_type,
+            "dns_is_response": self.dns_is_response,
             "dhcp_message_type": self.dhcp_message_type,
             "http_method": self.http_method,
             "http_host": self.http_host,

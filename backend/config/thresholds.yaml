@@ -91,12 +91,16 @@ detection_rules:
     enabled: true
     alert_type: "Possible DNS Anomaly"
     default_severity: "LOW"
-    # Maximum acceptable total length of a DNS query domain name
-    max_query_length: 100
-    # Maximum acceptable length of any single domain label/subdomain
-    max_label_length: 50
-    # High frequency query count threshold within the window
-    query_rate_threshold: 25
-    # Time window (in seconds) for query rate evaluation
+    # Sliding time window (seconds) for query rate evaluation
+    rate_window_seconds: 5.0
     time_window_seconds: 5.0
+    # Maximum query count allowed within the window before triggering anomaly (> threshold triggers)
+    max_queries_per_window: 25
+    query_rate_threshold: 25
+    # Maximum acceptable total length of a DNS query domain name (> threshold triggers)
+    max_query_length: 100
+    # Maximum acceptable length of any single domain label/subdomain (> threshold triggers)
+    max_label_length: 50
+    # Alert cooldown (seconds) to prevent spamming duplicate alerts for same source IP
+    alert_cooldown_seconds: 10.0
     description: "DNS query exhibits unusual length, structure, or high repetition frequency."

@@ -136,6 +136,7 @@ class PacketDissector:
         arp_target_ip: Optional[str] = None
         dns_query: Optional[str] = None
         dns_query_type: Optional[str] = None
+        dns_is_response: Optional[bool] = None
         dhcp_message_type: Optional[str] = None
         http_method: Optional[str] = None
         http_host: Optional[str] = None
@@ -239,6 +240,12 @@ class PacketDissector:
             if hasattr(packet, "haslayer") and packet.haslayer(scapy.DNS):
                 dns = packet[scapy.DNS]
                 protocol = "DNS"
+                qr_val = getattr(dns, "qr", None)
+                if qr_val is not None:
+                    try:
+                        dns_is_response = bool(int(qr_val) == 1)
+                    except Exception:
+                        dns_is_response = None
                 qdcount = getattr(dns, "qdcount", None)
                 qd = getattr(dns, "qd", None)
                 if qdcount == 0:
@@ -326,6 +333,7 @@ class PacketDissector:
             arp_target_ip=arp_target_ip,
             dns_query=dns_query,
             dns_query_type=dns_query_type,
+            dns_is_response=dns_is_response,
             dhcp_message_type=dhcp_message_type,
             http_method=http_method,
             http_host=http_host,

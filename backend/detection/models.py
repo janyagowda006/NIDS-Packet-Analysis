@@ -45,6 +45,9 @@ class DetectionResult:
     dst_port: Optional[int] = None
     previous_mac: Optional[str] = None
     new_mac: Optional[str] = None
+    dns_query_count: int = 0
+    query_name: Optional[str] = None
+    query_length: Optional[int] = None
 
     def __post_init__(self) -> None:
         """Synchronize detection_type and scan_type aliases."""
@@ -93,6 +96,11 @@ class DetectionResult:
         """Convenience accessor for configured incomplete ratio threshold."""
         return self.threshold_values.get("incomplete_ratio_threshold")
 
+    @property
+    def observed_query_count(self) -> int:
+        """Alias for dns_query_count."""
+        return self.dns_query_count
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize detection result to dictionary."""
         return {
@@ -115,6 +123,9 @@ class DetectionResult:
             "end_time": self.end_time,
             "syn_count": self.syn_count,
             "icmp_count": self.icmp_count,
+            "dns_query_count": self.dns_query_count,
+            "query_name": self.query_name,
+            "query_length": self.query_length,
             "unique_destination_ports": self.unique_destination_ports,
             "unique_destination_ips": self.unique_destination_ips,
             "threshold_values": dict(self.threshold_values),
