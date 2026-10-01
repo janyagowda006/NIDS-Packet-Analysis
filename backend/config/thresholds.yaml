@@ -49,6 +49,8 @@ detection_rules:
     syn_rate_threshold: 50
     # Minimum ratio of incomplete (half-open) connections to total SYNs (0.0 - 1.0)
     incomplete_ratio_threshold: 0.8
+    # Minimum connection attempts required before evaluating incomplete ratio (prevents false alerts on 1-2 packets)
+    min_syn_for_ratio: 5
     description: "Abnormally high SYN packet rate with incomplete TCP handshakes."
 
   # ----------------------------------------------------------------------------

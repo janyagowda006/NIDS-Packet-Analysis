@@ -24,7 +24,9 @@ class DetectionResult:
     src_ip: str
     dst_ip: Optional[str] = None
     protocol: str = "TCP"
-    scan_type: Optional[str] = None  # e.g., "VERTICAL", "HORIZONTAL", "SYN_SCAN"
+    scan_type: Optional[str] = None  # e.g., "VERTICAL", "HORIZONTAL", "SYN_SCAN", "SYN_RATE_ANOMALY"
+    detection_type: Optional[str] = None
+    incomplete_ratio: Optional[float] = None
 
     timestamp: float = field(default_factory=time.time)
     window_seconds: float = 1.0
@@ -40,6 +42,13 @@ class DetectionResult:
     detection_reason: str = ""
     evidence: Dict[str, Any] = field(default_factory=dict)
     dst_port: Optional[int] = None
+
+    def __post_init__(self) -> None:
+        """Synchronize detection_type and scan_type aliases."""
+        if self.detection_type is None and self.scan_type is not None:
+            object.__setattr__(self, "detection_type", self.scan_type)
+        elif self.scan_type is None and self.detection_type is not None:
+            object.__setattr__(self, "scan_type", self.detection_type)
 
     @property
     def source_ip(self) -> str:
@@ -61,6 +70,16 @@ class DetectionResult:
         """Alias for detection_reason."""
         return self.detection_reason
 
+    @property
+    def observed_syn_count(self) -> int:
+        """Alias for syn_count."""
+        return self.syn_count
+
+    @property
+    def configured_ratio_threshold(self) -> Optional[float]:
+        """Convenience accessor for configured incomplete ratio threshold."""
+        return self.threshold_values.get("incomplete_ratio_threshold")
+
     def to_dict(self) -> Dict[str, Any]:
         """Serialize detection result to dictionary."""
         return {
@@ -73,6 +92,8 @@ class DetectionResult:
             "dst_port": self.dst_port,
             "protocol": self.protocol,
             "scan_type": self.scan_type,
+            "detection_type": self.detection_type or self.scan_type,
+            "incomplete_ratio": self.incomplete_ratio,
             "timestamp": self.timestamp,
             "window_seconds": self.window_seconds,
             "start_time": self.start_time,

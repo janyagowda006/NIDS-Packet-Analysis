@@ -35,6 +35,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
             "time_window_seconds": 1.0,
             "syn_rate_threshold": 50,
             "incomplete_ratio_threshold": 0.8,
+            "min_syn_for_ratio": 5,
             "description": "Abnormally high SYN packet rate with incomplete TCP handshakes.",
         },
         "arp_spoofing": {
