@@ -34,6 +34,7 @@ class DetectionResult:
     end_time: float = 0.0
 
     syn_count: int = 0
+    icmp_count: int = 0
     unique_destination_ports: int = 0
     unique_destination_ips: int = 0
 
@@ -83,6 +84,11 @@ class DetectionResult:
         return self.syn_count
 
     @property
+    def observed_icmp_count(self) -> int:
+        """Alias for icmp_count."""
+        return self.icmp_count
+
+    @property
     def configured_ratio_threshold(self) -> Optional[float]:
         """Convenience accessor for configured incomplete ratio threshold."""
         return self.threshold_values.get("incomplete_ratio_threshold")
@@ -108,6 +114,7 @@ class DetectionResult:
             "start_time": self.start_time,
             "end_time": self.end_time,
             "syn_count": self.syn_count,
+            "icmp_count": self.icmp_count,
             "unique_destination_ports": self.unique_destination_ports,
             "unique_destination_ips": self.unique_destination_ips,
             "threshold_values": dict(self.threshold_values),
