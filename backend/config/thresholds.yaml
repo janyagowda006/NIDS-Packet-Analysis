@@ -1,0 +1,96 @@
+# ==============================================================================
+# Network Intrusion Detection System (NIDS) - Detection Thresholds Configuration
+# ==============================================================================
+# NOTE: All values below are configurable default baseline thresholds.
+# They are not hard-coded in the detection engines and can be tuned for
+# different laboratory networks, VM environments, or traffic baselines.
+# ==============================================================================
+
+system:
+  # General engine sliding window retention in seconds
+  sliding_window_seconds: 60
+  # Alert cooldown (seconds) to prevent alerting floods for identical flows
+  alert_cooldown_seconds: 10
+  # Default database path
+  db_path: "nids_events.db"
+
+detection_rules:
+  # ----------------------------------------------------------------------------
+  # 1. Port Scan Detection (Rule: Possible Port Scan)
+  # Tracks TCP SYN attempts against multiple unique ports from a single source.
+  # ----------------------------------------------------------------------------
+  port_scan:
+    enabled: true
+    alert_type: "Possible Port Scan"
+    default_severity: "HIGH"
+    # Time window (in seconds) over which SYN packet attempts are evaluated
+    time_window_seconds: 1.0
+    # Minimum number of unique destination ports contacted within the window
+    unique_ports_threshold: 15
+    # Minimum number of TCP SYN attempts within the window
+    min_syn_count: 20
+    description: "High rate of connection attempts across multiple destination ports."
+
+  # ----------------------------------------------------------------------------
+  # 2. SYN Flood / SYN Anomaly Detection (Rule: Possible SYN Flood / SYN Anomaly)
+  # Tracks high volumes of SYN requests without completed handshakes.
+  # ----------------------------------------------------------------------------
+  syn_anomaly:
+    enabled: true
+    alert_type: "Possible SYN Flood / SYN Anomaly"
+    default_severity: "HIGH"
+    # Time window (in seconds) for rate evaluation
+    time_window_seconds: 1.0
+    # Threshold for SYN packets per second from a single source or to a destination
+    syn_rate_threshold: 50
+    # Minimum ratio of incomplete (half-open) connections to total SYNs (0.0 - 1.0)
+    incomplete_ratio_threshold: 0.8
+    description: "Abnormally high SYN packet rate with incomplete TCP handshakes."
+
+  # ----------------------------------------------------------------------------
+  # 3. ARP Spoofing / Mapping Anomaly (Rule: Possible ARP Spoofing / ARP Mapping Anomaly)
+  # Detects conflicting IP-to-MAC address bindings on the local broadcast domain.
+  # ----------------------------------------------------------------------------
+  arp_spoofing:
+    enabled: true
+    alert_type: "Possible ARP Spoofing / ARP Mapping Anomaly"
+    default_severity: "CRITICAL"
+    # Enable inspection of gratuitous ARP and ARP replies
+    inspect_replies_only: false
+    # Flag to alert when an observed IP address changes its associated MAC
+    alert_on_mac_change: true
+    description: "IP address previously mapped to one MAC address is now claimed by another."
+
+  # ----------------------------------------------------------------------------
+  # 4. Ping Sweep Detection (Rule: Possible Ping Sweep)
+  # Tracks ICMP Echo Requests (Type 8) fanning out across multiple destination IPs.
+  # ----------------------------------------------------------------------------
+  ping_sweep:
+    enabled: true
+    alert_type: "Possible Ping Sweep"
+    default_severity: "MEDIUM"
+    # Time window (in seconds) for tracking ICMP sweep activity
+    time_window_seconds: 2.0
+    # Minimum number of unique destination IPs targeted with ICMP Echo Requests
+    unique_dst_ips_threshold: 10
+    # Minimum total ICMP echo requests within the window
+    min_icmp_count: 10
+    description: "ICMP Echo Requests sent to multiple destination IPs in a short time frame."
+
+  # ----------------------------------------------------------------------------
+  # 5. DNS Anomaly Detection (Rule: Possible DNS Anomaly)
+  # Inspects DNS query characteristics for tunneling, exfiltration, or query storms.
+  # ----------------------------------------------------------------------------
+  dns_anomaly:
+    enabled: true
+    alert_type: "Possible DNS Anomaly"
+    default_severity: "LOW"
+    # Maximum acceptable total length of a DNS query domain name
+    max_query_length: 100
+    # Maximum acceptable length of any single domain label/subdomain
+    max_label_length: 50
+    # High frequency query count threshold within the window
+    query_rate_threshold: 25
+    # Time window (in seconds) for query rate evaluation
+    time_window_seconds: 5.0
+    description: "DNS query exhibits unusual length, structure, or high repetition frequency."
