@@ -42,6 +42,8 @@ class DetectionResult:
     detection_reason: str = ""
     evidence: Dict[str, Any] = field(default_factory=dict)
     dst_port: Optional[int] = None
+    previous_mac: Optional[str] = None
+    new_mac: Optional[str] = None
 
     def __post_init__(self) -> None:
         """Synchronize detection_type and scan_type aliases."""
@@ -71,6 +73,11 @@ class DetectionResult:
         return self.detection_reason
 
     @property
+    def description(self) -> str:
+        """Alias for detection_reason."""
+        return self.detection_reason
+
+    @property
     def observed_syn_count(self) -> int:
         """Alias for syn_count."""
         return self.syn_count
@@ -94,6 +101,8 @@ class DetectionResult:
             "scan_type": self.scan_type,
             "detection_type": self.detection_type or self.scan_type,
             "incomplete_ratio": self.incomplete_ratio,
+            "previous_mac": self.previous_mac,
+            "new_mac": self.new_mac,
             "timestamp": self.timestamp,
             "window_seconds": self.window_seconds,
             "start_time": self.start_time,
