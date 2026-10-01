@@ -4,6 +4,8 @@
 # NOTE: All values below are configurable default baseline thresholds.
 # They are not hard-coded in the detection engines and can be tuned for
 # different laboratory networks, VM environments, or traffic baselines.
+# These thresholds are configurable baseline values, not experimentally
+# validated security thresholds.
 # ==============================================================================
 
 system:
@@ -25,11 +27,13 @@ detection_rules:
     default_severity: "HIGH"
     # Time window (in seconds) over which SYN packet attempts are evaluated
     time_window_seconds: 1.0
-    # Minimum number of unique destination ports contacted within the window
+    # Minimum number of unique destination ports contacted within the window (Vertical scan)
     unique_ports_threshold: 15
+    # Minimum number of unique destination IPs targeted within the window (Horizontal scan)
+    unique_destinations_threshold: 10
     # Minimum number of TCP SYN attempts within the window
     min_syn_count: 20
-    description: "High rate of connection attempts across multiple destination ports."
+    description: "High rate of connection attempts across multiple destination ports or hosts."
 
   # ----------------------------------------------------------------------------
   # 2. SYN Flood / SYN Anomaly Detection (Rule: Possible SYN Flood / SYN Anomaly)
