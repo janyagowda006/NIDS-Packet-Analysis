@@ -1,4 +1,4 @@
-"""Alert generation, explainability formatting, and event dispatch."""
+"""Alert persistence and management package for NIDS."""
 
 from backend.alert.database import AlertDatabase
 from backend.alert.manager import AlertManager

@@ -17,6 +17,9 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "alert_cooldown_seconds": 10,
         "db_path": "nids_events.db",
     },
+    "database": {
+        "path": "nids_events.db",
+    },
     "detection_rules": {
         "port_scan": {
             "enabled": True,

@@ -16,6 +16,10 @@ system:
   # Default database path
   db_path: "nids_events.db"
 
+database:
+  # Default SQLite database path for alert persistence
+  path: "nids_events.db"
+
 detection_rules:
   # ----------------------------------------------------------------------------
   # 1. Port Scan Detection (Rule: Possible Port Scan)
